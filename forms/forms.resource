@@ -1,6 +1,7 @@
 *** Settings ***
-Documentation    Variables and keywords for form-related automation tests
+Documentation    Variables and keywords for form related automation tests
 Library    SeleniumLibrary    run_on_failure=None
+Library    XML
 
 *** Variables ***
 ${BROWSER}    Firefox
@@ -10,18 +11,18 @@ ${DELAY}    0.5
 &{HOBBY_ELEMENTS}    Sports=hobbies-checkbox-1    Reading=hobbies-checkbox-2    Music=hobbies-checkbox-3
 
 *** Keywords ***
-# GENERAL KEYWORDS
-Fill A Text Box
+Fill Text Box
     [Documentation]    General text field filler
     [Arguments]    ${text_field_element_id}    ${text_to_be_inputted}
     Input Text    //input[@id="${text_field_element_id}"]    ${text_to_be_inputted}
+    Textfield Value Should Be    //input[@id="${text_field_element_id}"]    ${text_to_be_inputted}
 
 Dropdown Handler
     [Documentation]    General dropdown menu handler
     [Arguments]    ${dropdown_element_id}    ${item_to_be_selected}
     Press Keys    //div[@id="${dropdown_element_id}"]    ${item_to_be_selected}    ENTER
+    Element Should Contain  //div[@id="${dropdown_element_id}"]    ${item_to_be_selected}
 
-# TEST RELATED KEYWORDS
 Open Browser To Form
     Open Browser    ${URL}    ${BROWSER}    service_log_path=${{os.path.devnull}}
     Maximize Browser Window
@@ -30,23 +31,26 @@ Open Browser To Form
 
 Fill First Name
     [Arguments]    ${first_name}
-    Fill A Text Box    firstName    ${first_name}
+    Fill Text Box    firstName    ${first_name}
 
 Fill Last Name
     [Arguments]    ${last_name}
-    Fill A Text Box    lastName    ${last_name}
+    Fill Text Box    lastName    ${last_name}
 
 Fill Email
     [Arguments]    ${email}
-    Fill A Text Box    userEmail    ${email}
+    Fill Text Box    userEmail    ${email}
 
 Select Gender
     [Arguments]    ${gender}
+    # Had to use Click Element instead of Select Radio Button due to obscuring (invisible?) element
+    # (Error: is not clickable at point (XXX,XXX) because another element obscures it)
     Click Element    //label[@for="${GENDER_ELEMENTS}[${gender}]"]
+    Radio Button Should Be Set To    gender    ${gender}
 
 Fill Mobile Number
     [Arguments]    ${mobile_number}
-    Fill A Text Box    userNumber    ${mobile_number}
+    Fill Text Box    userNumber    ${mobile_number}
 
 Fill Date Of Birth
     [Arguments]    ${date_of_birth}
@@ -54,8 +58,11 @@ Fill Date Of Birth
 
 Select Hobbies
     [Arguments]    @{hobbies}
+    # Had to use Click Element instead of Select Checkbox due to obscuring (invisible?) element
+    # (Error: is not clickable at point (XXX,XXX) because another element obscures it)
     FOR    ${hobby}    IN    @{hobbies}
         Click Element    //label[@for="${HOBBY_ELEMENTS}[${hobby}]"]
+        Checkbox Should Be Selected    //input[@id="${HOBBY_ELEMENTS}[${hobby}]"]
     END
 
 Select State
@@ -68,4 +75,4 @@ Select City
 
 Submit Form And Verify
     Click Element   //button[@id="submit"]
-    Element Should Contain    //div[@id="example-modal-sizes-title-lg"]    Thanks for submitting the form
+    Element Text Should Be    //div[@id="example-modal-sizes-title-lg"]    Thanks for submitting the form
