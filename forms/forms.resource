@@ -54,7 +54,9 @@ Fill Mobile Number
 
 Fill Date Of Birth
     [Arguments]    ${date_of_birth}
-    Press Keys    //input[@id="dateOfBirthInput"]    SHIFT+HOME    ${date_of_birth}    ENTER
+    Press Keys    //input[@id="dateOfBirthInput"]    SHIFT+HOME    ${date_of_birth}
+    Textfield Value Should Be    //input[@id="dateOfBirthInput"]    ${date_of_birth}
+    Press Keys    //input[@id="dateOfBirthInput"]    ENTER
 
 Select Hobbies
     [Arguments]    @{hobbies}
