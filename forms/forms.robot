@@ -9,7 +9,7 @@ Default Tags    forms
 Valid Form Submit
     [Documentation]    FORM_001
     ...                Opens the DemoQA form, fills it with sample data and submits it
-    Open Browser To Form
+    Open Browser To Desired Page    /automation-practice-form
     Fill First Name    John
     Fill Last Name    Doe
     Fill Email    johndoe@test.com
@@ -19,4 +19,4 @@ Valid Form Submit
     Select Hobbies    Sports
     Select State    NCR
     Select City    Delhi
-    Submit Form And Verify
+    Submit And Verify Form
